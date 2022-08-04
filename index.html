@@ -24,12 +24,29 @@
             margin: 32px;
             width: 100%;
             max-width: 600px;
+            position: relative;
         }
 
         button {
             font-size: 24px;
             border-radius: 10px;
             padding: 5px 30px;
+        }
+
+        #copy {
+            position: absolute;
+            font-size: 0.8rem;
+            padding: 8px 4px;
+            right: 8px;
+            bottom: -26px;
+        }
+
+        #copy_success {
+            position: absolute;
+            font-size: 0.8rem;
+            padding: 8px 4px;
+            right: 125px;
+            bottom: -25px;
         }
 
         textarea,
@@ -42,18 +59,31 @@
             font-size: 1.5rem;
             height: calc(100vh - 300px);
         }
+
+        .fadeOut {
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s linear 300ms, opacity 300ms;
+        }
+        .fadeIn {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s linear 0s, opacity 300ms;
+        }
     </style>
 </head>
 <body>
 <div>
     <header>
         <h1>Israel ID Helper</h1>
-        <h2>Put here list of 8 random numbers and get valid ID</h2>
+        <h2>Put here list of numbers (8-digits) and get valid ID</h2>
     </header>
 
     <div>
         <textarea id="list" placeholder='12345678\\n23456781\\n34567812'></textarea>
         <pre id="output"></pre>
+        <button id="copy">copy to clipboard</button>
+        <span id="copy_success" class="fadeOut">Copied!</span>
     </div>
 
     <button id="submit">Get IDs</button>
@@ -63,6 +93,8 @@
   const list = document.getElementById('list');
   const output = document.getElementById('output');
   const button = document.getElementById('submit');
+  const copy = document.getElementById('copy');
+  const copy_success = document.getElementById('copy_success');
 
   const getInc = (num, i) => {
     const inc = Number(num) * ((i % 2) + 1);
@@ -70,13 +102,19 @@
   };
 
   const getID = (str) => {
-    const n = str.split('').reduce((a, c, i) => a + getInc(c, i), 0);
-    return str + (10 - (n % 10));
+    const n = str.split('').reduce((a, c, i) => a + getInc(c, i), 0) % 10;
+    return str + (n ? 10 - n : 0);
   }
 
   list.placeholder = '12345678\n12345678\n12345678';
   button.addEventListener('click', () => {
     output.innerText = list.value.split('\n').map(e => getID(e)).join('\n');
+  });
+
+  copy.addEventListener('click', () => {
+    navigator.clipboard.writeText(output.innerText);
+    copy_success.className = 'fadeIn';
+    setTimeout(() => copy_success.className = 'fadeOut', 1000);
   });
 </script>
 </body>
