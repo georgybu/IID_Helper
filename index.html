@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IID Helper by Georgy Bunin</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body > div {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        body > div > div {
+            flex: 1 1 calc(100vh - 300px);
+            display: flex;
+            margin: 32px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        button {
+            font-size: 24px;
+            border-radius: 10px;
+            padding: 5px 30px;
+        }
+
+        textarea,
+        pre {
+            width: 50%;
+            border: 1px solid lightgray;
+            margin: 8px;
+            border-radius: 4px;
+            overflow-y: scroll;
+            font-size: 1.5rem;
+            height: calc(100vh - 300px);
+        }
+    </style>
+</head>
+<body>
+<div>
+    <header>
+        <h1>Israel ID Helper</h1>
+        <h2>Put here list of 8 random numbers and get valid ID</h2>
+    </header>
+
+    <div>
+        <textarea id="list" placeholder='12345678\\n23456781\\n34567812'></textarea>
+        <pre id="output"></pre>
+    </div>
+
+    <button id="submit">Get IDs</button>
+</div>
+
+<script>
+  const list = document.getElementById('list');
+  const output = document.getElementById('output');
+  const button = document.getElementById('submit');
+
+  const getInc = (num, i) => {
+    const inc = Number(num) * ((i % 2) + 1);
+    return (inc > 9) ? inc - 9 : inc;
+  };
+
+  const getID = (str) => {
+    const n = str.split('').reduce((a, c, i) => a + getInc(c, i), 0);
+    return str + (10 - (n % 10));
+  }
+
+  list.placeholder = '12345678\n12345678\n12345678';
+  button.addEventListener('click', () => {
+    output.innerText = list.value.split('\n').map(e => getID(e)).join('\n');
+  });
+</script>
+</body>
+</html>
